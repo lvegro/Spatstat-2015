@@ -1,0 +1,17 @@
+{
+    "contents" : "for (i in 1:5){\n  t <- F[[i]]\n  \nd1 <- t\ngeot <- as.geodata(t, coords.col=1:2, data.col=4) # con il logar. col 4\n\nrequire(sp)\nrequire(spatstat)\nrequire(gstat)\n\n\ncoordinates(d1) <- ~x+y\n\nw <- convexhull.xy(t$x, t$y)\npattern<- as.ppp(X=(cbind(t$x, t$y)), W=w)\n\ndlim<- range(pairdist.ppp(pattern))\nhscat(log.fe~1,d1,breaks=seq(dlim[1], dlim[2]/2,length.out=14))\nmd <- dlim[2]\n}",
+    "created" : 1405417473906.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3755757502",
+    "id" : "EECD6310",
+    "lastKnownWriteTime" : 1405418702,
+    "path" : "~/R/spaziale/ferro_lombardia/asdf.R",
+    "project_path" : "asdf.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

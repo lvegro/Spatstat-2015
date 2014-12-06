@@ -1,0 +1,17 @@
+{
+    "contents" : "require(ggplot2)\n\ntheme_jack <- function (base_size = 12, base_family = \"\") {\n  theme_gray(base_size = base_size, base_family = base_family) %+replace% \n    theme(\n      axis.text = element_text(colour = \"black\"),\n      axis.title.x = element_text(colour = \"Black\"),\n      axis.title.y = element_text(colour = \"Black\", angle=45),\n      panel.background = element_rect(fill=\"gray95\"),\n      panel.grid.minor.y = element_line(size=0),\n      panel.grid.major = element_line(colour = \"white\"),\n      plot.background = element_rect(fill=\"white\")\n    )   \n}\n\ntheme_set(theme_jack())\n\n### Produzione Grafici\n# istogrammi\n\n\npdf(\"grafica\\\\istogrammi.pdf\")\nlapply(F, function(x){\n  hist(x =  x$log.fe,\n        ylab = \"Frequenza\",\n        xlab = \"log(Concentrazione)\",breaks=15\n  )})\ndev.off()\n\n# qplot\ni <- 1\nlapply(F, function(x){\n  ggplot(data=x,\n       aes(x = log.fe)) +\n    geom_histogram(aes(y=..density..),colour=\"black\", fill=\"gray80\", binwidth=0.75) +\n    stat_function(fun = dnorm,\n                  colour=\"black\",\n                  linetype='dashed',\n                  size=1.1,\n                  args =list(mean = mean(x$log.fe), sd = sd(x$log.fe))) +\n    ylab(\"Frequenza\") +\n    xlab(\"log(Concentrazione)\")\n  })\n",
+    "created" : 1404813219767.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3233897027",
+    "id" : "D84F1065",
+    "lastKnownWriteTime" : 1406118446,
+    "path" : "~/R/spaziale/ferro_lombardia/grafici.r",
+    "project_path" : "grafici.r",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

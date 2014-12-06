@@ -1,0 +1,16 @@
+{
+    "contents" : "### Ferro - ESDA Larga Scala\n## I dati sono contenuti in una lista di nome F, dove ognuno dei 5 elementi è un df\n## con attributi x, y, fe, e log.fe.\n\n# \n# lapply(F,\n#        function(F){\n#          \n\ntest<-F[[1]]\n\n\nrequire(spatstat)\nw <- convexhull.xy(test$x, test$y)\npp <- ppp(test$x, test$y, window=w, marks=test$log.fe)\n# grafico a barre delle distanze dal primo vicino più prossimo\nhist(nndist(pp), col=\"grey75\", breaks=15, xlab=\"distanza\", ylab=\"frequenza\", main=\"Distanza dal primo vicino\")\n\n# log-concentrazione in funzione di longitudine e latitudine\n# con linee di tendenza via kernel\npar(mfrow = c(1,2))\nlapply(F, function(test){\nwith(test, {plot(log.fe ~ x,\n                xlab=\"longitudine\",\n                ylab=\"log conc\",\n                main=\"logc vs long\",\n                col=\"grey80\",\n                pch=19,\n                cex=.6)\n                lines(ksmooth(x, log.fe,\n                              \"normal\",\n                              bandwidth=sd(test$x)),\n                      col=2, lwd=2.5)})\nwith(test, {plot(log.fe ~ y,\n                xlab=\"latitudine\",\n                ylab=\"log conc\",\n                main=\"logc vs lat\",\n                col=\"grey80\",\n                pch=19,\n                cex=.6)\n     lines(ksmooth(y, log.fe,\n                   \"normal\",\n                   bandwidth=sd(test$y)),\n           col=2, lwd=2.5)})\n})\n\n\n### spatial outlier\n### procedimento\n# determina  matrice di prossimità\n# da matrice di prossimità a pesi\n# standardizza logfe\n# calcola local I per tutti i pti\n",
+    "created" : 1404772611376.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3963278107",
+    "id" : "44532BEB",
+    "lastKnownWriteTime" : 1406105037,
+    "path" : "~/R/spaziale/ferro_lombardia/esda.r",
+    "project_path" : "esda.r",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

@@ -1,0 +1,17 @@
+{
+    "contents" : "# per le prove\ni <- 1\nrequire(geoR)\n#for (i in 1:5){\n\nt <- F[[i]]\n\n# rendilo geodata\n# d1 è un df (x,y, data) a cui sovraimponiamo le coordinate per costruire gli scatter\n# laggati\nd1 <- t\ngeot <- as.geodata(t, coords.col=1:2, data.col=4) # con il logar. col 4\n\nrequire(sp)\nrequire(spatstat)\nrequire(gstat)\n\n\ncoordinates(d1) <- ~x+y\n\nw <- convexhull.xy(t$x, t$y)\npattern<- as.ppp(X=(cbind(t$x, t$y)), W=w)\n\ndlim<- range(pairdist.ppp(pattern))\nhscat(log.fe~1,d1,breaks=seq(dlim[1], dlim[2]/2,length.out=14))\nmd <- dlim[2]\n\n# ### nuvola del variogramma\npar(mfrow=c(2,1)) \nplot(variog(geot, estimator.type=\"classical\",option=\"cloud\"),cex=0.4, max.dist=md) #variogramma cloud \nplot(variog(geot, estimator.type=\"modulus\",option=\"cloud\"),cex=0.4, max.dist=md) \n# \n# # variog binnato\n# \n# par(mfrow=c(2,1)) \n# bin1<-variog(geot, estimator.type=\"classical\",option=\"bin\", bin.cloud=TRUE,max.dist=md) \n# # ragruppa i punti della nuvola del variogramma in gruppi per produrne poi i boxplot \n# bin2<-variog(geot, estimator.type=\"modulus\",option=\"bin\", bin.cloud=TRUE, max.dist=md) \n# # come sopra ma usando la trasformata |Y(s)-Y(r)|^1/2 \n# \n# \n# vario.0 <- variog(geot, dir=0, tol=pi/8) \n# vario.45 <- variog(geot, dir=pi/4, tol=pi/8) \n# vario.90 <- variog(geot, dir=pi/2, tol=pi/8) \n# vario.135 <- variog(geot, dir=pi*3/4, tol=pi/8) \n# \n# par(mfrow=c(1,1)) # ripristina una finestra per il grafico\n# \n# plot(c(0,md?),c(0,9),type=\"n\",xlab=\"distanza\",ylab=\"semivarianza\")#,type=\"p\" \n# lines(bin1) \n# lines(vario.0,col=2,lty=2) \n# lines(vario.45,col=3,lty=3) \n# lines(vario.90,col=4,lty=4) \n# lines(vario.135,col=5,lty=5) \n# \n# legend(10,100, legend=c(\"omnidirectional\", expression(0 * degree), \n#                         expression(45 * degree), expression(90 * degree), \n#                         expression(135 * degree)), lty=c(1:5),col=1:5) \n# #}\n# \n# ### stima parametrica del variogramma\n# \nvariogramma <- variog(geot, estimator.type=\"classical\", \n                      max.dist=md/2) # variogramma empirico \n# plot(variogramma, main=\"valutazione visiva variogrammi\") \n# lines.variomodel(cov.model = \"exp\", cov.pars = c(25,35), nug =2.5, \n#                  max.dist=md/2,col=2,lty=2) # aggiunge plot 'teorico' con valori fissati \n# \n# # #--- VERIFICARE USANDO L'HELP DELLA FUNZIONE L'USO DI lines.variomodel \n# # lines.variomodel(cov.model = \"exp\", cov.pars = c(20,35), nug =20, \n# #                  max.dist=max.dist,col=3,lty=3) # aggiunge curva “teorica” con valori fissati \n# # lines.variomodel(cov.model = \"exp\", cov.pars = c(30,35), nug =20, \n# #                  max.dist=max.dist,col=4,lty=4) \n# # legend(70,30,c(\"variogramma empirico\",\"soglia parziale 25\",\"soglia parziale 20\",\"soglia parziale \n# # 30\"),col=1:4,lty=1:4) \n# # #--- provare valutazioni\n# \nexp.fit <- variofit(variogramma, ini.cov.pars=c(3,md/5), \n                           cov.model=\"exponential\", fix.nugget=FALSE,nugget=2) \nsummary(dat.om.var.fit) \ndat.om.var.fit$cov.pars\nplot(variogramma)\nlines(exp.fit)\n\n#}",
+    "created" : 1404989604471.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1053644667",
+    "id" : "12D5C87D",
+    "lastKnownWriteTime" : 1406103540,
+    "path" : "~/R/spaziale/ferro_lombardia/piccola.R",
+    "project_path" : "piccola.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

@@ -1,0 +1,17 @@
+{
+    "contents" : "library(spdep)\n### local moran for point pattern\n### p.es 2010\n### spdep richiede che l'oggetto sia in formato spatialpoints\np2009 <- data.frame(x=F[[2]][,1], y=F[[2]][,2], log.fe=scale(F[[2]]$log.fe))\ncoordinates(p2009) <- ~x+y\n# OK!\nnb2listw(knn2nb(knn=knearneigh(x=p2009, k=8))) -> lw\npvals <- localmoran(x=p2009$log.fe, listw=lw)[,5]\np2009$outl <- cut(pvals,breaks=c(0, 0.05, +Inf), labels=c(\"Outlier\", \"0\"))\npalette(c(\"red\", \"grey80\"))\n",
+    "created" : 1406131144816.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3960376481",
+    "id" : "AEFBA309",
+    "lastKnownWriteTime" : 1406550140,
+    "path" : "~/R/spaziale/ferro_lombardia/lmoran.R",
+    "project_path" : "lmoran.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

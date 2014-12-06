@@ -1,0 +1,87 @@
+OPERAZIONI PRELIMINARI
+========================================================
+
+```{r}
+# carica i pacchetti richiesti
+require(ggplot2)
+require(sp)
+require(spatstat)
+require(maptools)
+require(RColorBrewer)
+```
+
+I pacchetti si installano con `install.packages("nomepacchetto")`, vengono poi caricato con `library()` o `require()`.
+Il pacchetto RColorBrewer serve per creare tavolozze di colori per le mappe tematiche o le legende. Contiene la funzione `brewer.pal` (palette)
+
+```{r}
+pal <- brewer.pal(6, "Accent") #uso: brewer.pal(ncolori, palette) [vedi help]
+```
+
+```{r}
+# carica i dati dal csv
+#setwd("C:/Users/Lorenzo/Desktop/spaziale")
+tmp <- read.csv(file="FE.csv", header=T, sep=";")
+# anno è categoriale
+tmp$anno <- as.factor(tmp$anno)
+# c'è un outlier in 2011, lo metto NA
+tmp$ferro[which.max(tmp$ferro)]<- NA
+
+
+##### FINO A **** è TUTTO SBAGLIATO, NON USARE!
+# # osservazioni negli anni per ogni sito
+# fe_xy <- reshape(tmp, 
+#                  idvar="X_GB",
+#                  v.names=c("ferro"),
+#                  timevar="anno",
+#                  direction="wide")
+# 
+# # solo i dati del ferro senza coordinate
+# fe_data <- fe_xy[,c(6:10)]
+# 
+# # controllo i dati:
+# apply(fe_data, 2, summary)
+# apply(fe_data, 2, FUN=function(x) {sum(!is.na(x))}) # conta osservazioni
+# 
+# Fe <- reshape(tmp, idvar="CODICE", v.names=c("ferro"), timevar="anno", direction="wide")
+# 
+# 
+# 
+# x <- apply(fe_data,2, is.na)
+# x <- apply(x, 2, as.numeric)
+# # ora x è una matrice di 1 e 0 a seconda che in (i,j) ci sia un'osservazione
+# # o no
+# factor <- as.factor(5 - rowSums(x)) # 5 - la somma per riga di x 
+# factor <- factor[factor != "0"] # 0 non serve
+# *****
+
+map <- readShapePoly(fn="Lombardia.shp")
+w <- as.owin(map) # converte shp in window
+
+
+
+pp <- ppp(x=fe_xy$X_GB, y=fe_xy$Y_GB, marks=factor, window=w)
+
+
+plot(pp, cols=pal, pch=19, cex=0.8)
+
+# 
+# # prealloca una lista di 5 elementi
+# 
+F <- vector("list", 5)
+# popola la lista con 5 dataframe ciascuno con X=long, Y=lat, Fe=conc. ferro
+for(i in 1:5){
+  F[[i]]$X <- tmp$X_GB[tmp$anno==as.character(2008+i)]
+  F[[i]]$Y <- tmp$Y_GB[tmp$anno==as.character(2008+i)]
+  F[[i]]$fe <-tmp$ferro[tmp$anno==as.character(2008+i)]
+  F[[i]]$log.fe <- log(tmp$ferro[tmp$anno==as.character(2008+i)])
+}
+```
+
+a Questo punto abbiamo una lista, che contiene 5 dataframe con i 5 anni separatamente, ognuno con latitudine, longitudine, concentrazione e log(concentrazione). Possiamo accedere a ogni elemento della lista con
+```{r}
+F[[1]]
+F[[2]]
+```
+quindi in questo caso `F[[1]]` e un dataframe che contiene gli attributi `X`, `Y`, `fe` e `log.fe`.
+
+e comodo perche cosi possiamo accedere, per esempio, alla concentrazione del terzo anno direttamente con `F[[3]]$fe`, ed essendo un indice numerico (1,2..., 5), e facile metterlo dentro un ciclo for, per esempio.

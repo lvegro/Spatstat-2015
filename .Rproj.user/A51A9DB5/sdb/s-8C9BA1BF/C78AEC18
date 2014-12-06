@@ -1,0 +1,16 @@
+{
+    "contents" : "# carica i pacchetti richiesti\nrequire(reshape2)\nrequire(sp)\nrequire(spatstat)\nrequire(maptools)\nrequire(RColorBrewer)\n\npal <- brewer.pal(6, \"Accent\")\n\n# carica i dati dal csv\n# setwd(\"C:/Users/Lorenzo/Desktop/spaziale\")\ntmp <- read.csv(file=\"FE.csv\", header=T, sep=\";\")\n\n# anno è categoriale\ntmp$anno <- as.factor(tmp$anno)\n\n# c'è un outlier in 2011, lo metto NA\ntmp$ferro[which.max(tmp$ferro)]<- NA\n\n# rimuove gli elementi duplicati\n# ci sono alcuni elementi che si ripetono esattamente: dovrebbero essere errori\n# dal momento che è decisamente difficile ottenere la stessa misura anche\n# ricampionando sullo stesso sito nello stesso momento\n\n# \"allargo\" il data set con una colonna per ogni anno: dcast è in reshape2\n# in questo caso aggrego le rilevazioni sullo stesso sito con la media\n# (sarebbe forse meglio la mediana?)\nwide <- dcast(data=tmp,\n              formula = CODICE + X_WGS84 + Y_WGS84~ anno,\n              fun.aggregate=mean,\n              value.var=\"ferro\" )\n\n## Mappa Lombardia e finestra del processo\nmap <- readShapePoly(\"shp/RLGeoDATA//Sfondo_polygon.shp\")\nw <- as.owin(map)\n\n# rinomino le colonne di wide: il vettore di stringhe a dx sovrascrive quello a\n# sx\nnames(wide) <- c(\"cod\",\n                 \"x\",\n                 \"y\",\n                 \"fe.09\",\n                 \"fe.10\",\n                 \"fe.11\",\n                 \"fe.12\",\n                 \"fe.13\")\n\n# prealloca una lista di 5 elementi\nF <- vector(\"list\", 5)\n# popola la lista con 5 dataframe ciascuno con X=long, Y=lat, Fe=conc. ferro\n# nb: ogni attributo di ogni elemento della lista ha lunghezza di 381 = # siti\n\nfor(i in 1:5){\n  F[[i]] <- data.frame(wide$x,\n                       wide$y,\n                       wide[,3+i],\n                       log(wide[,3+i]))\n  names(F[[i]]) <- c(\"x\", \"y\", \"fe\", \"log.fe\")\n  F[[i]] <- F[[i]][complete.cases(F[[i]]),] # solo casi completi\n}\n# pulisci lo spazio\nrm (tmp, i)\n",
+    "created" : 1404770229070.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1077035190",
+    "id" : "C78AEC18",
+    "lastKnownWriteTime" : 1404985402,
+    "path" : "~/R/spaziale/ferro_lombardia/ferro.R",
+    "project_path" : "ferro.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
